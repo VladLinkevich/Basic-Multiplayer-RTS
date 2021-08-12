@@ -16,7 +16,7 @@ namespace Units
         [Command]
         private void CmdMove(Vector3 position)
         {
-            if (!NavMesh.SamplePosition(position, out NavMeshHit hit, 1f, NavMesh.AllAreas)) { return; }
+            if (IsValidPosition(position, out var hit) == false) { return; }
 
             agent.SetDestination(hit.position);
         }
@@ -33,17 +33,24 @@ namespace Units
         [ClientCallback]
         private void Update()
         {
-            if (!hasAuthority) { return; }
-
-            if (!Mouse.current.rightButton.wasPressedThisFrame) { return; }
-
-            Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-
-            if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity)) { return; }
-
+            if (hasAuthority == false) { return; }
+            if (PressRightMouseButton() == false) { return; }
+            if (GetRaycastHit(out var hit) == false) { return; }
+            
             CmdMove(hit.point);
         }
 
         #endregion
+
+        private bool GetRaycastHit(out RaycastHit hit)
+        {
+            Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+            return Physics.Raycast(ray, out hit, Mathf.Infinity);
+        }
+
+        private bool PressRightMouseButton() => Mouse.current.rightButton.wasPressedThisFrame;
+        
+        private bool IsValidPosition(Vector3 position, out NavMeshHit hit) => 
+            NavMesh.SamplePosition(position, out hit, 1f, NavMesh.AllAreas);
     }
 }
