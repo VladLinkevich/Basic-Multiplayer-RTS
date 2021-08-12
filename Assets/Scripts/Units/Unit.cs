@@ -1,19 +1,30 @@
+using Mirror;
 using UnityEngine;
 
 namespace Units
 {
-    public class Unit : MonoBehaviour
+    public class Unit : NetworkBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        [SerializeField] private GameObject selectedHighlighting;
+
+        #region Client
+
+        [Client]
+        public void Select()
         {
+            if (!hasAuthority) { return; }
+            
+            selectedHighlighting.SetActive(true);
+        }
         
+        [Client]
+        public void Deselect()
+        {
+            if (!hasAuthority) {return;}
+
+            selectedHighlighting.SetActive(false);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        #endregion
     }
 }
