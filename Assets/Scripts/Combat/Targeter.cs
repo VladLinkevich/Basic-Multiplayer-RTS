@@ -7,6 +7,8 @@ namespace Combat
     {
         private Targetable _target;
 
+        public Targetable Target => _target;
+        
         #region Server
 
         [Command]

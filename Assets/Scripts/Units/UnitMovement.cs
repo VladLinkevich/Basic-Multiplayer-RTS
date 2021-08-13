@@ -11,16 +11,20 @@ namespace Units
     {
         [SerializeField] private NavMeshAgent Agent = null;
         [SerializeField] private Targeter Targeter;
+        [SerializeField] private float ChaseRange = 10;
 
         #region Server
 
         [ServerCallback]
         private void Update()
         {
-            if (!Agent.hasPath) { return; }
-            if (Agent.remainingDistance > Agent.stoppingDistance) { return; }
-            
-            Agent.ResetPath();
+            if (Targeter.Target != null)
+            {
+                ChaseToTarget();
+            } else
+            {
+                MoveToPoint();
+            }
         }
 
         [Command]
@@ -33,7 +37,28 @@ namespace Units
 
         #endregion
 
+        private void ChaseToTarget()
+        {
+            if (IsChaseRange() == true)
+            {
+                Agent.SetDestination(Targeter.Target.transform.position);
+            } else if (Agent.hasPath == true)
+            {
+                Agent.ResetPath();
+            }
+        }
+
+        private void MoveToPoint()
+        {
+            if (!Agent.hasPath) { return; }
+            if (Agent.remainingDistance > Agent.stoppingDistance) { return; }
+            Agent.ResetPath();
+        }
+
         private bool IsValidPosition(Vector3 position, out NavMeshHit hit) => 
             NavMesh.SamplePosition(position, out hit, 1f, NavMesh.AllAreas);
+
+        private bool IsChaseRange() =>
+            Vector3.Distance(Targeter.Target.transform.position, transform.position) > ChaseRange;
     }
 }

@@ -89,8 +89,7 @@ namespace Units
 
                 if (Collision(screenPosition, min, max))
                 {
-                    SelectedUnits.Add(unit);
-                    unit.Select();
+                    SelectUnit(unit);
                 }
             }
         }
@@ -100,8 +99,7 @@ namespace Units
             if (DetectUnit(out var unit)) return;
             if (CheckSelectedUnit(unit)) return;
 
-            SelectedUnits.Add(unit);
-            unit.Select();
+            SelectUnit(unit);
         }
 
         private void ClearSelectedUnit()
@@ -145,6 +143,12 @@ namespace Units
             {
                 _player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
             }
+        }
+
+        private void SelectUnit(Unit unit)
+        {
+            SelectedUnits.Add(unit);
+            unit.Select();
         }
 
         private bool CheckSelectedUnit(Unit unit) => !unit.hasAuthority || SelectedUnits.Contains(unit);
