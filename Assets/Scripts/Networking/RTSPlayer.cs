@@ -9,6 +9,8 @@ namespace Networking
     {
         private List<Unit> _units = new List<Unit>();
 
+        public List<Unit> Units => _units;
+
         #region Server
         
         public override void OnStartServer()
