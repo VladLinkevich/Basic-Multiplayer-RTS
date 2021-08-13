@@ -1,4 +1,6 @@
+using System;
 using Mirror;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,6 +11,15 @@ namespace Units
         [SerializeField] private NavMeshAgent Agent = null;
 
         #region Server
+
+        [ServerCallback]
+        private void Update()
+        {
+            if (!Agent.hasPath) { return; }
+            if (Agent.remainingDistance > Agent.stoppingDistance) { return; }
+            
+            Agent.ResetPath();
+        }
 
         [Command]
         public void CmdMove(Vector3 position)

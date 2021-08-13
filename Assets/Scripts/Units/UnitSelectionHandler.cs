@@ -54,13 +54,11 @@ namespace Units
 
         private void StartSelectionArea()
         {
-            foreach (Unit selectedUnit in SelectedUnits)
+            if (Keyboard.current.leftShiftKey.isPressed == false)
             {
-                selectedUnit.Deselect();
+                ClearSelectedUnit();
             }
 
-            SelectedUnits.Clear();
-            
             UnitSelectionArea.gameObject.SetActive(true);
             _startPosition = Mouse.current.position.ReadValue();
         }
@@ -86,9 +84,10 @@ namespace Units
 
             foreach (Unit unit in _player.Units)
             {
+                if (SelectedUnits.Contains(unit)) { continue; }
                 Vector3 screenPosition = _mainCamera.WorldToScreenPoint(unit.transform.position);
 
-                if (AABB(screenPosition, min, max))
+                if (Collision(screenPosition, min, max))
                 {
                     SelectedUnits.Add(unit);
                     unit.Select();
@@ -98,16 +97,21 @@ namespace Units
 
         private void TapSelectArea()
         {
-            Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask) == false) return;
-            if (hit.collider.TryGetComponent<Unit>(out Unit unit) == false) return;
-            if (!unit.hasAuthority) return;
+            if (DetectUnit(out var unit)) return;
+            if (CheckSelectedUnit(unit)) return;
 
             SelectedUnits.Add(unit);
+            unit.Select();
+        }
+
+        private void ClearSelectedUnit()
+        {
             foreach (Unit selectedUnit in SelectedUnits)
             {
-                selectedUnit.Select();
+                selectedUnit.Deselect();
             }
+
+            SelectedUnits.Clear();
         }
 
         private void DisableUnitSelectionArea()
@@ -117,7 +121,15 @@ namespace Units
             UnitSelectionArea.anchoredPosition = Vector2.zero;
         }
 
-        private bool AABB(Vector3 screenPosition, Vector2 min, Vector2 max)
+        private bool DetectUnit(out Unit unit)
+        {
+            unit = null;
+            Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask) == false) { return true; }
+            return hit.collider.TryGetComponent<Unit>(out unit) == false;
+        }
+
+        private bool Collision(Vector3 screenPosition, Vector2 min, Vector2 max)
         {
             return screenPosition.x > min.x &&
                    screenPosition.x < max.x &&
@@ -134,5 +146,7 @@ namespace Units
                 _player = NetworkClient.connection.identity.GetComponent<RTSPlayer>();
             }
         }
+
+        private bool CheckSelectedUnit(Unit unit) => !unit.hasAuthority || SelectedUnits.Contains(unit);
     }
 }
