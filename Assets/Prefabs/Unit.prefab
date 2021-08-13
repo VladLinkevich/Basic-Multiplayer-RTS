@@ -1981,6 +1981,7 @@ GameObject:
   - component: {fileID: 6439498206418492331}
   - component: {fileID: 2691359890361070409}
   - component: {fileID: 7139755306222512180}
+  - component: {fileID: 4540895395383547946}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -2035,7 +2036,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  agent: {fileID: 6439498206418492331}
+  Agent: {fileID: 6439498206418492331}
 --- !u!195 &6439498206418492331
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2100,6 +2101,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 4.044101, y: 4.003893, z: 3.1073942}
   m_Center: {x: 0.18100786, y: 1.5019462, z: -0.04309827}
+--- !u!114 &4540895395383547946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2174127545133840355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a7a196105306b546bd63b6c035e8edf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  UnitMovement: {fileID: 2014179054955532257}
+  SelectedHighlighting: {fileID: 2162541077123253960}
 --- !u!1001 &7764785729390688622
 PrefabInstance:
   m_ObjectHideFlags: 0

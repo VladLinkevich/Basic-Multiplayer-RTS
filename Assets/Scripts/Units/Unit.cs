@@ -5,8 +5,11 @@ namespace Units
 {
     public class Unit : NetworkBehaviour
     {
-        [SerializeField] private GameObject selectedHighlighting;
+        [SerializeField] private UnitMovement UnitMovement = null;
+        [SerializeField] private GameObject SelectedHighlighting;
 
+        public UnitMovement GetUnitMovement => UnitMovement;
+        
         #region Client
 
         [Client]
@@ -14,15 +17,15 @@ namespace Units
         {
             if (!hasAuthority) { return; }
             
-            selectedHighlighting.SetActive(true);
+            SelectedHighlighting.SetActive(true);
         }
         
         [Client]
         public void Deselect()
         {
-            if (!hasAuthority) {return;}
+            if (!hasAuthority) { return; }
 
-            selectedHighlighting.SetActive(false);
+            SelectedHighlighting.SetActive(false);
         }
 
         #endregion

@@ -7,9 +7,11 @@ namespace Units
 {
     public class UnitSelectionHandler : MonoBehaviour
     {
-        [SerializeField] private LayerMask layerMask = new LayerMask();
+        [SerializeField] private LayerMask LayerMask = new LayerMask();
+        public List<Unit> SelectedUnits { get; } = new List<Unit>();
+
         private Camera _mainCamera;
-        private List<Unit> _selectedUnits = new List<Unit>();
+        
         private void Awake()
         {
             _mainCamera = Camera.main;
@@ -19,27 +21,32 @@ namespace Units
         {
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                foreach (Unit selectedUnit in _selectedUnits)
-                {
-                    selectedUnit.Deselect();
-                }
-                
-                _selectedUnits.Clear();
+                StartSelectionArea();
             } else if (Mouse.current.leftButton.wasReleasedThisFrame)
             {
                 ClearSelectionArea();
             }
         }
 
+        private void StartSelectionArea()
+        {
+            foreach (Unit selectedUnit in SelectedUnits)
+            {
+                selectedUnit.Deselect();
+            }
+
+            SelectedUnits.Clear();
+        }
+
         private void ClearSelectionArea()
         {
             Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask) == false) return;
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, LayerMask) == false) return;
             if (hit.collider.TryGetComponent<Unit>(out Unit unit) == false) return;
             if (!unit.hasAuthority) return;
             
-            _selectedUnits.Add(unit);
-            foreach (Unit selectedUnit in _selectedUnits)
+            SelectedUnits.Add(unit);
+            foreach (Unit selectedUnit in SelectedUnits)
             {
                 selectedUnit.Select();
             }
