@@ -1,4 +1,5 @@
 using System;
+using Combat;
 using Mirror;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ namespace Units
     public class Unit : NetworkBehaviour
     {
         [SerializeField] private UnitMovement UnitMovement = null;
+        [SerializeField] private Targeter Targeter = null;
         [SerializeField] private GameObject SelectedHighlighting;
 
         public static event Action<Unit> ServerOnUnitSpawned;
@@ -16,6 +18,7 @@ namespace Units
         public static event Action<Unit> AuthorityOnUnitDespawned;
         
         public UnitMovement GetUnitMovement => UnitMovement;
+        public Targeter GetTargeter => Targeter;
         
         #region Server
 

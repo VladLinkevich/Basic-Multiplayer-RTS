@@ -1,4 +1,5 @@
 using System;
+using Combat;
 using Mirror;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Units
     public class UnitMovement : NetworkBehaviour
     {
         [SerializeField] private NavMeshAgent Agent = null;
+        [SerializeField] private Targeter Targeter;
 
         #region Server
 
@@ -25,7 +27,7 @@ namespace Units
         public void CmdMove(Vector3 position)
         {
             if (IsValidPosition(position, out var hit) == false) { return; }
-
+            Targeter.ClearTarget();
             Agent.SetDestination(hit.position);
         }
 
